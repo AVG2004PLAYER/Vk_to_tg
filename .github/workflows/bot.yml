@@ -20,12 +20,18 @@ jobs:
     - name: Install dependencies
       run: pip install requests
     
-    - name: Restore cache
-      uses: actions/cache@v3
+    - name: Download last_ids.json
+      uses: actions/download-artifact@v3
       with:
-        path: last_ids.json
-        key: vk-bot-${{ github.run_id }}
-        restore-keys: vk-bot-
+        name: vk-bot-cache
+        path: ./
+      continue-on-error: true
+    
+    - name: Create cache file if not exists
+      run: |
+        if [ ! -f last_ids.json ]; then
+          echo "{}" > last_ids.json
+        fi
     
     - name: Run bot
       env:
@@ -33,3 +39,10 @@ jobs:
         TG_TOKEN: ${{ secrets.TG_TOKEN }}
         TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
       run: python bot.py
+    
+    - name: Upload last_ids.json
+      uses: actions/upload-artifact@v3
+      with:
+        name: vk-bot-cache
+        path: last_ids.json
+        retention-days: 7
