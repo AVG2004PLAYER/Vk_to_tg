@@ -5,7 +5,7 @@ from datetime import datetime
 
 # ===== ТОКЕНЫ ИЗ СЕКРЕТОВ GITHUB =====
 VK_TOKEN = os.environ.get("VK_TOKEN")
-TG_TOKEN = os.enokenviron.get("TG_TOKEN")
+TG_TOKEN = os.environ.get("TG_TOKEN")
 TG_CHAT_ID = os.environ.get("TG_CHAT_ID")
 
 # ID источников: беседы и личка группы
@@ -150,3 +150,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
