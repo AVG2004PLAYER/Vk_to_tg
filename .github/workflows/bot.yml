@@ -1,0 +1,38 @@
+name: VK → TG Bot
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # каждые 15 минут
+  workflow_dispatch:          # ручной запуск
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 📦 Install dependencies
+        run: pip install requests
+
+      - name: 🚀 Run bot
+        env:
+          VK_TOKEN: ${{ secrets.VK_TOKEN }}
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+        run: python bot.py
+
+      - name: 💾 Commit updated last_ids.json
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+          git add last_ids.json || echo "No changes"
+          git commit -m "Update last_ids.json" || echo "Nothing to commit"
+          git push
